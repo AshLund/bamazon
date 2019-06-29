@@ -26,7 +26,38 @@ var connection = mysql.createConnection({
             console.log("Price: $" + results[i].price + "\n")
     
     // connection.end();
-        }
 
+
+        }
+        prompt();
   })
 }
+
+function prompt () {
+    connection.query("SELECT * FROM products", function(err, results) {
+    if (err) throw err;
+  inquirer.
+prompt([
+   {
+       type: "number",
+       name: "idNumber",
+       message: "What is the ID of the product you'd like to buy? "
+   },
+   {
+     type: "number",
+     name: "quantity",
+     message: "how many would you like?"
+   }
+  ])
+.then(function(inquirerResponse) {
+  console.log(inquirerResponse.idNumber)
+  for (var i = 0; i < results.length; i++) {
+    if (results[i].item_id === inquirerResponse.idNumber) {
+      chosenItem = results[i].product_name;
+      console.log(chosenItem)
+    }
+  }
+  });
+});
+}
+
