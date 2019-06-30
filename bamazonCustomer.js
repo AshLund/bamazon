@@ -54,22 +54,29 @@ prompt([
   for (var i = 0; i < results.length; i++) {
     if (results[i].item_id===inquirerResponse.idNumber) {
       chosenItem=results[i];
+      console.log(chosenItem.product_name)
     }
     if (results[i].stock_quantity > inquirerResponse.quantity) {
       chosenItem=results[i];
-      connection.query("UPDATE products SET ? WHERE ?", [{
-        stock_quantity: chosenItem.stock_quantity -inquirerResponse.quantity
+      connection.query("UPDATE products SET ? WHERE ?", 
+      [
+        {
+        stock_quantity: chosenItem.stock_quantity - inquirerResponse.quantity
       },
-    {item_id:inquirerResponse.idNumber}],
-      function (error) {
-        if (error) throw err;
+    {
+      item_id:chosenItem.item_id
+    }
+      ],
+    function (error) {
+      if (error) throw err;
       console.log("Product purchased successfully!");
-      console.log("Summary:")
+      console.log("Summary:");
       console.log("Item Name:" + chosenItem.product_name);
       console.log("Item Count:" + inquirerResponse.quantity);
-      console.log("Total Cost: $" + (chosenItem * inquirerResponse.quantity))
+      console.log("Total Cost: $" + chosenItem.price * inquirerResponse.quantity);
 
-      })
+    }
+      );
     }else
     console.log("Insufficient stock.")
   }
