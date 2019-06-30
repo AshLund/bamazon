@@ -1,1 +1,1 @@
-# bamazon
+'Bamazon' is a CLI app that mimicks "amazon" and uses Javascript, Inquirer, Node.JS & MySQL. When the user starts the "app", they are shown all the products in the "store". The user is then prompoted to pick the product number and a quantity that they would like to purchase. Once the purchase is made, the user gets a summary. The product database is updated to reflect the new in-stock quantities. 
