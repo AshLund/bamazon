@@ -76,9 +76,9 @@ prompt([
       console.log("Total Cost: $" + chosenItem.price * inquirerResponse.quantity);
       }
       );
-  //   }else {
-  //   console.log("Insufficient stock.")
-  // }
+    }else {
+    console.log("Insufficient stock.")
+
 }
   });
 });
