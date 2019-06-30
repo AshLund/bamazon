@@ -55,7 +55,8 @@ prompt([
     if (results[i].item_id===inquirerResponse.idNumber) {
     chosenItem=results[i]
     }
-    if (results[i].stock_quantity > inquirerResponse.quantity) {
+  }
+    if (chosenItem.stock_quantity > inquirerResponse.quantity) {
       connection.query("UPDATE products SET ? WHERE ?", 
       [
         {
@@ -67,7 +68,7 @@ prompt([
       ],
       function(error) {
         if (error) throw err;
-           console.log(chosenItem.product_name)
+          //  console.log(chosenItem.product_name)
       console.log("Product purchased successfully!");
       console.log("Summary:");
       console.log("Item Name:" + chosenItem.product_name);
@@ -79,8 +80,6 @@ prompt([
   //   console.log("Insufficient stock.")
   // }
 }
-  }
   });
 });
 }
-
