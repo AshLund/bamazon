@@ -30,6 +30,8 @@ inquirer
       viewProducts();
   } else if (inquirerResponse.options==="View Low Inventory") {
       lowInventory();
+  }else if (inquirerResponse.options==="Add to Inventory") {
+    addInventroy();
   }
 
     })
@@ -60,4 +62,41 @@ function lowInventory () {
             }
         }
     })
+}
+
+function addInventroy () {
+    inquirer
+    .prompt([
+      {
+        name: "product",
+        type: "number",
+        message: "Please list the product ID"
+      },
+      {
+        name: "amount",
+        type: "number",
+        message: "What quantity would you like to add?"
+      }
+    ])
+.then(function(inquirerResponse) {
+    connection.query("SELECT * FROM products", function(err, results) {
+        if (err) throw err;
+    var chosenItem;
+    for (var i = 0; i < results.length; i++) {
+      if (results[i].item_id===inquirerResponse.product) {
+      chosenItem=results[i]
+      console.log(results[i].product_name)
+      connection.query( "INSERT INTO products SET ?",
+      {
+        // item_id:chosenItem.item_id,
+        stock_quantity: chosenItem.stock_quantity + inquirerResponse.amount,
+      },
+      function(err) {
+        if (err) throw err;
+        console.log("Item added!");
+      });
+    }
+}
+      })
+      })
 }
