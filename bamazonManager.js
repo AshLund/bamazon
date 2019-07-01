@@ -32,8 +32,10 @@ inquirer
       lowInventory();
   }else if (inquirerResponse.options==="Add to Inventory") {
     addInventroy();
-  }
-
+  } else if (inquirerResponse.options==="Add New Product")
+{
+    newProduct();
+}
     })
 
 function viewProducts () {
@@ -79,24 +81,70 @@ function addInventroy () {
       }
     ])
 .then(function(inquirerResponse) {
-    connection.query("SELECT * FROM products", function(err, results) {
+    connection.query("SELECT stock_quantity FROM products WHERE ?", 
+    [
+        {
+            item_id:inquirerResponse.product
+        }
+    ],
+    
+    function(err, results) {
         if (err) throw err;
-    var chosenItem;
-    for (var i = 0; i < results.length; i++) {
-      if (results[i].item_id===inquirerResponse.product) {
-      chosenItem=results[i]
-      console.log(results[i].product_name)
-      connection.query( "INSERT INTO products SET ?",
+      var newQuantity=results[0].stock_quantity + inquirerResponse.amount
+  
+      connection.query( "UPDATE products SET ? WHERE ?",
+      [
       {
-        // item_id:chosenItem.item_id,
-        stock_quantity: chosenItem.stock_quantity + inquirerResponse.amount,
-      },
+        item_id:inquirerResponse.product
+    },
+    {   
+        stock_quantity: newQuantity
+      }
+    ],
       function(err) {
         if (err) throw err;
         console.log("Item added!");
-      });
-    }
+      }
+      )
+    })
+})
 }
-      })
-      })
+
+function newProduct () {
+    inquirer
+    .prompt([
+      {
+        name: "name",
+        type: "input",
+        message: "Please list the product name"
+      },
+      {
+        name: "department",
+        type: "input",
+        message: "Please list the department name"
+      },
+      {
+        name: "price",
+        type: "number",
+        message: "Please list the product price"
+      },
+      {
+        name: "quantity",
+        type: "number",
+        message: "Please list the product quantity"
+      }
+    ])
+    .then(function(inquirerResponse) {
+    connection.query( "INSERT INTO products SET ?",
+      {
+        product_name: inquirerResponse.name,
+        department_name: inquirerResponse.department,
+        price: inquirerResponse.price,
+        stock_quantity: inquirerResponse.quantity
+      },
+      function(err, res) {
+        console.log("product added")
+      }
+    );
+    });
 }
