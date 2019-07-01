@@ -67,6 +67,7 @@ function lowInventory () {
 }
 
 function addInventroy () {
+    connection.query("SELECT * FROM products", function (err, results) {
     inquirer
     .prompt([
       {
@@ -81,16 +82,12 @@ function addInventroy () {
       }
     ])
 .then(function(inquirerResponse) {
-    connection.query("SELECT stock_quantity FROM products WHERE ?", 
-    [
-        {
-            item_id:inquirerResponse.product
-        }
-    ],
-    
-    function(err, results) {
-        if (err) throw err;
-      var newQuantity=results[0].stock_quantity + inquirerResponse.amount
+     for (var i=0; i<results.length; i++) {
+         if (results[i].item_id===inquirerResponse.product) {
+           var chosenProduct=results[i]
+           var newQuantity=chosenProduct.stock_quantity + inquirerResponse.amount
+         }
+     }
   
       connection.query( "UPDATE products SET ? WHERE ?",
       [
@@ -104,11 +101,10 @@ function addInventroy () {
       function(err) {
         if (err) throw err;
         console.log("Item added!");
-      }
-      )
+      });
     })
-})
-}
+});
+
 
 function newProduct () {
     inquirer
@@ -147,4 +143,5 @@ function newProduct () {
       }
     );
     });
+}
 }
